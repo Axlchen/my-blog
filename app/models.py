@@ -8,7 +8,7 @@ Created on 2015年11月15日
 from flask import g
 from app import app
 import MySQLdb,hashlib,time
-from conf.development import MYSQL_HOST,MYSQL_USER,MYSQL_PASS,MYSQL_DB,MYSQL_PORT,PER_PAGE
+from conf.production import MYSQL_HOST,MYSQL_USER,MYSQL_PASS,MYSQL_DB,MYSQL_PORT,PER_PAGE
 
 @app.before_request
 def before_request():
