@@ -12,3 +12,4 @@ MYSQL_USER = 'root'
 MYSQL_PASS = 'cjj110724'
 MYSQL_DB   = 'blog'
 MYSQL_PORT = 3306
+PER_PAGE   = 5

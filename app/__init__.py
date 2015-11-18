@@ -14,4 +14,6 @@ app.config.from_object('conf.development')
 app.config.from_pyfile('config.py')
 #注册蓝图
 from .views.admin import admin
+from .views.home import home
 app.register_blueprint(admin)
+app.register_blueprint(home)

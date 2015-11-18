@@ -1,47 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Blog of Axlchen</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">   
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Bootstrap -->
-        <!--    <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">-->
-        <link rel="stylesheet" href="/static/css/bootstrap.css">
-        <link rel="stylesheet" href="/static/css/my.css">
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-        <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
-        <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-    </head>
-	<body>
-        <header>
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-                <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                      <span class="sr-only">Toggle navigation</span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">Axlchen</a>
-                    </div>
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="navbar-collapse">
-                        <ul class="nav navbar-nav">
-                          <li class="active"><a href="#">Home</a></li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                          <li><a href="#">About</a></li>
-                        </ul>
-                    </div><!-- /.navbar-collapse -->
-                </div>
-            </nav>
-        </header>
+{% extends "home/layout.html" %}
+{% block content %}
         <div class="content">
             <div class="container">
                 <div class="col-md-3 hidden-xs">
@@ -57,18 +15,11 @@
                             <div id="collapseCategory" class="panel-collapse collapse in">
                               <div class="panel-body">
                                   <div class="list-group">
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
+                                     {% for category in categorys %}
+	                                      <a href="{{ url_for('home.getArticleByCat',cat_id=category[0],page_id=1) }}" class="list-group-item categoryitem" id="catandnum">{{ category[1] }}
+	                                          <span class="badge">{{ category[2] }}</span>
+	                                      </a>
+                                  	 {% endfor %}
                                   </div>
                               </div>
                             </div>
@@ -106,41 +57,16 @@
                 </div>
                 <div class="col-md-9 class-xs-12">
                     <div>
-                        <div class="artical">
+                        <div class="article">
                             <div class="head">
-                                <h2>dddddddddddddddd</h2>
+                                <h2>{{ article[0] }}</h2>
                                 <div class="">
-                                    <span>2015-11-14</span>
+                                    <span>{{ article[5] }}</span>
                                     <span>14条</span>
                                 </div>
                             </div>
                             <div class="body">
-                                <p>看到前前同事的空间里有这么一句话:”XX领导对我不公平,不赏识,我一定要证明自己”,大概这个意思.</p>
-                                <p>其实这个岗位工资很低,也挺累,收入配不上她的付出.<br>
-                                在一个薪水对不起努力,领导又不赏识的情况下,她没有想着跳槽,而是在槽内努力争取让领导看见她.</p>
-                                <p>这是一种执.</p>
-                                <p>中国有13亿人口,这是一个大社会.<br>
-                                但每个人,经常接触的,只有几十个人.<br>
-                                在职场上,接触的,往往只有十几个人,你的上司,同事等.</p>
-                                <p>大社会中有无数的小社会.<br>
-                                国家首脑,讨论着国际民生,有他们的小社会;<br>
-                                一群长途司机,讨论着货运价格,有他们的小社会;<br>
-                                一群乞丐,也有他们的小社会.</p>
-                                <p>对名利,地位的追逐,往往在小社会内展开.<br>
-                                所以,<br>
-                                一群it人士,有”有头有脸”的人物,比如老李,CTO,XX架构师.<br>
-                                在一个村子,有”有头有脸”的人物,比如老王,庄稼收入颇丰.<br>
-                                一群乞丐,老张被人羡慕,占了地铁口的好地盘每天能讨300多块.</p>
-                                <p>可怕的是,一个人在某个小社会久了,就会忘记外面有个大社会.<br>
-                                当他受到不公正待遇,无论是委屈,还是反击,都在小社会里转圈.</p>
-                                <p>所以当她受到委屈时,只想到在小社会里,证明自己.<br>
-                                却忘记了,你完全可以离开当前的小社会.</p>
-                                <p>你可以在当前的小社会做的更好,也可以在走到更好的社会.</p>
-                                <p>比如:<br>
-                                你可以每天乞讨300多元,但还有人每天努力工作,赚600多.<br>
-                                你可以证明给领导看,但还有更好的岗位,赚的更多,公司更舒心.</p>
-                                <p>努力的同时,请记住,外面还有很多社会.</p>
-                                <p>王候将相宁有种乎?</p>
+                             {{ article[2]|safe }}
                             </div>
                         </div>
                         <hr>
@@ -197,16 +123,4 @@
                 </div>
             </div>
         </div>
-        <footer>
-            <div class="footer">
-                <p class="text-center">Axlchen</p>
-            </div>
-        </footer>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-<!--    <script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>-->
-    <script src="/static/js/bootstrap.js"></script>
-  </body>
-</html>
-
+{% endblock %}

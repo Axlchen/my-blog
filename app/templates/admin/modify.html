@@ -1,48 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Blog of Axlchen</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">   
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Bootstrap -->
-        <!--    <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">-->
-        <link rel="stylesheet" href="/static/css/bootstrap.css">
-        <link rel="stylesheet" href="/static/css/my.css">
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-        <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
-        <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-    </head>
-	<body>
-        <header>
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-                <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                      <span class="sr-only">Toggle navigation</span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">Axlchen</a>
-                    </div>
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="navbar-collapse">
-                        <ul class="nav navbar-nav">
-                          <li><a href="#">文章管理</a></li>
-                          <li><a href="#">评论管理</a></li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                          <li><a href="#">退出登陆</a></li>
-                        </ul>
-                    </div><!-- /.navbar-collapse -->
-                </div>
-            </nav>
-        </header>
+{% extends "admin/layout3.html" %}
+{% block content %}
         <div class="content">
             <div class="container">
                 <div class="row">
@@ -62,82 +19,60 @@
                             </div>
                             <div id="collapseCategory" class="panel-collapse collapse in">
                                 <div class="panel-body">
-                                    <!-- Split button -->
-                                    <div class="btn-group">
-                                        <button type="button" class="btn bt-default">文章分类</button>
-                                        <button type="button" class="btn btn-danger">请选择</button>
-                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                                            <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something else here</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">Separated link</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn bt-default">文章权限</button>
-                                        <button type="button" class="btn btn-danger">请选择</button>
-                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                                            <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something else here</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">Separated link</a></li>
-                                        </ul>
-                                    </div>
-                                    <p class="text-center">
-                                        <button class="btn btn-primary">确定修改</button>
-                                    </p>
+                                    <form id="modifyarticleform">
+	                                    <div class="btn-group makespace">
+	                                        <button type="button" class="btn btn-default">文章分类</button>
+	                                        <select class="select" name="category">
+		                                            {% for category in categorys %}
+		                                            	<option class="categoryitem" value="{{ category[0]}}" {% if category[0] == article[3] %}selected="selected"{% endif %}>
+		                                            		{{ category[1] }}
+		                                            	</option>
+		                                        	{% endfor %}
+	                                        </select>
+	                                    </div>
+	                                    <div class="btn-group makespace">
+	                                        <button type="button" class="btn btn-default">文章权限</button>
+	                                        <select class="select" name="auth">
+	                                            <option class="categoryitem" value="0" {% if not article[4] %}selected="selected"{% endif %}>公开</option>
+	                                            <option class="categoryitem" value="1" {% if article[4] %}selected="selected"{% endif %}>私有</option>
+	                                        </select>
+	                                    </div>
+	                                    <input type="hidden" name="aid" value="{{ aid }}" />
+	                                    <p class="text-center">
+	                                        <button class="btn btn-primary" id="submit-modifyarticle" >确定修改</button>
+	                                    </p>
+	                                    <div class="alert message">
+									  		<strong></strong>
+								  		</div>
+                                    </form>
                                 </div>
                             </div>
-                          </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-9 class-xs-12">
-                    <form class="form-horizontal" role="form">
+                {% if article is defined %}
+                    <form class="form-horizontal" id="modifyarticle" role="form">
                         <div class="form-group">
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="inputEmail3" placeholder="Title">
+                                <input type="text" class="form-control" name="title" value="{{ article[0] }}" placeholder="Title">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-12">
-<!--                                <textarea id="container" class="form-control" rows="20"></textarea>-->
+                                <input type="text" class="form-control" name="shortdesc" value="{{ article[1] }}" placeholder="导读">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
                                  <script id="container" name="content" type="text/plain">
-                                    这里写你的初始化内容
+        							{{ article[2]|safe }}
                                  </script>
                             </div>
                         </div>
                     </form>
+                {% endif %}
                 </div>
             </div>
         </div>
-        <footer class="footer">
-            <div class="container">
-                <p class="text-center">Axlchen</p>
-            </div>
-        </footer>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-<!--    <script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>-->
-    <script src="/static/js/bootstrap.js"></script>
-    <script type="text/javascript" charset="utf-8" src="/static/ueditor/ueditor.config.js"></script>
-<!--    <script type="text/javascript" charset="utf-8" src="ueditor.config.js"></script>-->
-    <script type="text/javascript" charset="utf-8" src="/static/ueditor/ueditor.all.js"> </script>
-<!--    <script type="text/javascript" charset="utf-8" src="ueditor.all.min.js"> </script>-->
-    <!-- 实例化编辑器 -->
-    <script type="text/javascript">
-        var ue = UE.getEditor('container');
-    </script>
-  </body>
-</html>
-
+{% endblock %}

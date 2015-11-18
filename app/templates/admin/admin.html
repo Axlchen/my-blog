@@ -3,33 +3,37 @@
         <div class="content">
             <div class="container">
                 <div class="col-md-3">
-                    <div class="text-center">
-                        <button class="btn btn-lg btn-primary">新文章</button>
+                    <div class="text-center  newarticle">
+                        <a href="{{ url_for('admin.write') }}"><button class="btn btn-lg btn-primary">新文章</button></a>
                     </div>
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                               <h4 class="panel-title">
                                 <ul class="list-unstyled">
-                                    <li>文章分类<div class="pull-right"><span class="glyphicon glyphicon-plus"></span></div></li>
+                                    <li>文章分类<div class="pull-right"><span class="glyphicon glyphicon-plus addcategory"></span></div></li>
                                 </ul>
                               </h4>
                             </div>
                             <div id="collapseCategory" class="panel-collapse collapse in">
                               <div class="panel-body">
+								  <form class="form-inline addcategory-form" id="addcategory-form" role="form">
+									  <div class="form-group">
+									    <input type="text" name="cat_name" class="form-control" placeholder="分类名称">
+									  </div>
+									  <div class="makespace"></div>
+									  <button type="button" id="addcategorysumit" class="btn btn-default pull-right">确定</button>
+								  </form>
+								  <div class="alert message">
+									  <strong></strong>
+								  </div>
+								  <div class="clearfix makespace"></div>
                                   <div class="list-group">
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
+                                  {% for category in categorys %}
+	                                      <a href="{{ url_for('admin.getArticleByCat',cat_id=category[0],page_id=1) }}" class="list-group-item categoryitem" id="catandnum">{{ category[1] }}
+	                                          <span class="badge">{{ category[2] }}</span>
+	                                      </a>
+                                  {% endfor %}
                                   </div>
                               </div>
                             </div>
@@ -38,59 +42,46 @@
                 </div>
                 <div class="col-md-9 class-xs-12">
                     <div>
+                    {% for article in articles %}
                         <article class="well">
                             <div class="text-center">
-                                <h3>标题</h3>
+                                <a href="{{ url_for('admin.modify',art_id=article[4]) }}"><h3>{{ article[0] }}</h3></a>
                             </div>
-                            <div class="text-center">时间分类评论</div>
+                            <div class="text-center">{{ article[3] }}&nbsp;&nbsp;{{ article[2] }}</div>
                             <div>
                                 <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
+                                {{ article[1]|safe }}
                                 </p>
                             </div>
                         </article>
-                        <article class="well">
-                            <div class="text-center">
-                                <h3>标题</h3>
-                            </div>
-                            <div class="text-center">时间分类评论</div>
-                            <div>
-                                <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                </p>
-                            </div>
-                        </article>
-                        <article class="well">
-                            <div class="text-center">
-                                <h3>标题</h3>
-                            </div>
-                            <div class="text-center">时间分类评论</div>
-                            <div>
-                                <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                </p>
-                            </div>
-                        </article>
-                        <article class="well">
-                            <div class="text-center">
-                                <h3>标题</h3>
-                            </div>
-                            <div class="text-center">时间分类评论</div>
-                            <div>
-                                <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                </p>
-                            </div>
-                        </article>
-                    </div>    
+                    {% endfor %}
+                    </div>
+                    <!-- 总分页 -->
+                    {% if total is defined and page is defined and total > perpage %}
+						<ul class="pager">
+						{% if page <= 1  %}
+							<li class="next"><a href="{{ url_for('admin.mainPage',page_id=2) }}">next &rarr;</a></li>
+						{% else %}
+						  	<li class="previous"><a href="{{ url_for('admin.mainPage',page_id=page-1) }}">&larr; previous</a></li>
+						  	{% if total > page*perpage %}
+						  	<li class="next"><a href="{{ url_for('admin.mainPage',page_id=page+1) }}">next &rarr;</a></li>
+							{% endif %}
+						{% endif %}  
+						</ul>
+					{% endif %}
+					<!-- 分类分页 -->
+					{% if total is defined and catpage is defined and total > perpage %}
+						<ul class="pager">
+						{% if catpage <= 1  %}
+							<li class="next"><a href="{{ url_for('admin.getArticleByCat',cat_id=catid,page_id=2) }}">next &rarr;</a></li>
+						{% else %}
+						  	<li class="previous"><a href="{{ url_for('admin.getArticleByCat',cat_id=catid,page_id=catpage-1) }}">&larr; previous</a></li>
+						  	{% if total > catpage*perpage %}
+						  	<li class="next"><a href="{{ url_for('admin.getArticleByCat',cat_id=catid,page_id=catpage+1) }}">next &rarr;</a></li>
+							{% endif %}
+						{% endif %}  
+						</ul>
+					{% endif %}
                 </div>
             </div>
         </div>

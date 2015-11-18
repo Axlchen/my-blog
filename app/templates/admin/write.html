@@ -19,58 +19,51 @@
                             </div>
                             <div id="collapseCategory" class="panel-collapse collapse in">
                                 <div class="panel-body">
-                                    <!-- Split button -->
-                                    <div class="btn-group">
-                                        <button type="button" class="btn bt-default">文章分类</button>
-                                        <button type="button" class="btn btn-danger">请选择</button>
-                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                                            <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something else here</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">Separated link</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn bt-default">文章权限</button>
-                                        <button type="button" class="btn btn-danger">请选择</button>
-                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                                            <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something else here</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">Separated link</a></li>
-                                        </ul>
-                                    </div>
-                                    <p class="text-center">
-                                        <button class="btn btn-primary">发布</button>
-                                    </p>
+                                	<form id="postarticle">
+	                                    <div class="btn-group makespace">
+	                                        <button type="button" class="btn btn-default">文章分类</button>
+	                                        <select class="select" name="category">
+		                                        <option class="categoryitem" value="">请选择</option>
+		                                        {% for category in categorys %}
+		                                            <option class="categoryitem" value="{{ category[0]}}">{{ category[1] }}</option>
+		                                        {% endfor %}
+	                                        </select>
+	                                    </div>
+	                                    <div class="btn-group makespace">
+	                                        <button type="button" class="btn btn-default">文章权限</button>
+	                                        <select class="select" name="auth">
+		                                        <option class="categoryitem" value="">请选择</option>
+		                                            <option class="categoryitem" value="0">公开</option>
+		                                            <option class="categoryitem" value="1">私有</option>
+	                                        </select>
+	                                    </div>
+	                                    <p class="text-center">
+	                                        <button class="btn btn-primary" id="submit-postarticle" >发布</button>
+	                                    </p>
+	                                    <div class="alert message">
+									  		<strong></strong>
+								  		</div>
+                                    </form>
                                 </div>
                             </div>
                           </div>
                     </div>
                 </div>
                 <div class="col-md-9 class-xs-12">
-                    <form class="form-horizontal" role="form">
+                    <form class="form-horizontal" id="article" role="form">
                         <div class="form-group">
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="inputEmail3" placeholder="Title">
+                                <input type="text" name="title" class="form-control" placeholder="Title">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-12">
-<!--                                <textarea class="form-control" rows="6"></textarea>-->
-                                <script id="container" name="content" type="text/plain">
-                                    这里写你的初始化内容
-                                 </script>
+                                <input type="text" name="shortdesc" class="form-control" placeholder="导读">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <script id="container" name="content" type="text/plain"></script>
                             </div>
                         </div>
                     </form>

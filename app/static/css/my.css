@@ -45,3 +45,20 @@ hr {
   margin-top: 40px;
   margin-bottom: 40px;
 }
+.addcategory,.categoryitem{
+	cursor:pointer;	
+}
+.newarticle,.makespace{
+	margin-bottom:10px;
+}
+.foottext{
+	line-height:60px;
+	margin-bottom:0;
+}
+.message,.addcategory-form{
+	display:none;
+}
+.select{
+	height:36px;
+	margin-left:5px;
+}
