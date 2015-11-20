@@ -1,4 +1,13 @@
 $(function(){
+	if(window.location.href.indexOf('by')){
+		if(window.location.href.indexOf('comment') > 0){
+			$('#nav-article').removeClass('active');
+			$('#nav-comment').addClass('active');
+		}else{
+			$('#nav-article').addClass('active');
+			$('#nav-comment').removeClass('active');
+		}
+	}
 	$('.addcategory').click(function(){      //增加类别
 		$('.addcategory-form').toggle();
 		if($(this).hasClass('glyphicon-plus')){
@@ -34,7 +43,7 @@ $(function(){
                 $('.message>strong').text('网络错误');
             },
             success: function(data) {
-            	if(data == '增加成功'){
+            	if(data == 'success'){
             		window.location.reload();
             	}else{
             		$('.addcategory-form').toggle();
@@ -91,7 +100,7 @@ $(function(){
                 $('.message').show();
             },
             success: function(data) {
-            	if(data == '发表成功'){
+            	if(data == 'success'){
 	                window.location.href="/by/admin";
             	}else{
 	            	$('.message').addClass('alert-danger');
@@ -129,7 +138,7 @@ $(function(){
 		$.ajax({
             cache: true,
             type: "POST",
-            url:"/by/modify/"+parseInt(aid),
+            url:"/comment/"+parseInt(aid),
             data:data+'&title='+data2+'&content='+data3+'&shortdesc='+data4,
             async: false,
             error: function() {
@@ -137,9 +146,9 @@ $(function(){
                 $('.message>strong').text('网络错误');
             },
             success: function(data) {
-            	if(data == '修改成功'){
+            	if(data == 'success'){
             		$('.message').addClass('alert-info');
-	                $('.message>strong').text(data);
+	                $('.message>strong').text('修改成功');
             	}else{
 	            	$('.message').addClass('alert-danger');
 	                $('.message>strong').text(data);
@@ -147,5 +156,93 @@ $(function(){
             }
         });
         $('.message').show(); 
+	});
+	$('#submit-commentform').click(function(e){   //发表评论
+		e.preventDefault();
+		nickname = $("#comment-form input[name='nickname']").val();
+		email = $("#comment-form input[name='email']").val();
+		content = $("#comment-form textarea").val();
+		if(!nickname||!email||!content){
+            $('.message>strong').text('请填写相应的信息');
+            $('.message').addClass('alert-warning');
+	        $('.message').show();
+			return;
+		}
+		$.ajax({
+            cache: true,
+            type: "POST",
+            url:"/comment",
+            data:$('#comment-form').serialize(),
+            async: false,
+            error: function() {
+            	$('.message').addClass('alert-danger');
+                $('.message>strong').text('网络错误');
+            },
+            success: function(data) {
+            	if(data == 'success'){
+            		$('.message').removeClass('alert-danger');
+            		$('.message').addClass('alert-info');
+	                $('.message>strong').text('评论成功!');
+	                setTimeout(function(){
+		                window.location.reload();
+	                },3000); //指定1秒刷新一次
+            	}else{
+            		$('.message').removeClass('alert-info');
+	            	$('.message').addClass('alert-danger');
+	                $('.message>strong').text(data);
+            	}
+            }
+        });
+        $('.message').show(); 
+	});
+	$('.comment-allow').click(function(){   //通过评论
+		var cid = $(this).attr('data')
+		var aid = $(this).attr('dataa')
+		$.ajax({
+            cache: true,
+            type: "POST",
+            url:"/by/updatecomment",
+            data:'commentid='+cid+'&todo=allow',
+            async: false,
+            error: function() {
+            	$('.message').addClass('alert-danger');
+                $('.message>strong').text('网络错误');
+            },
+            success: function(data) {
+            	if(data == 'success'){
+            		window.location.reload();
+            		window.location.href = "/by/decomment/"+aid+"#comment"+cid;
+            	}else{
+	            	$('.message').addClass('alert-danger');
+	                $('.message>strong').text(data);
+	                $('.message').show(); 
+            	}
+            }
+        });
+	});
+	$('.comment-delete').click(function(){   //删除评论
+		var cid = $(this).attr('data')
+		var aid = $(this).attr('dataa')
+		$.ajax({
+            cache: true,
+            type: "POST",
+            url:"/by/updatecomment",
+            data:'commentid='+cid+'&todo=delete',
+            async: false,
+            error: function() {
+            	$('.message').addClass('alert-danger');
+                $('.message>strong').text('网络错误');
+            },
+            success: function(data) {
+            	if(data == 'success'){
+            		window.location.reload();
+            		window.location.href = "/by/decomment/"+aid+"#comment"+cid;
+            	}else{
+	            	$('.message').addClass('alert-danger');
+	                $('.message>strong').text(data);
+            	}
+            }
+        });
+		$('.message').show(); 
 	});
 })

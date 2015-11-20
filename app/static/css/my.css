@@ -62,3 +62,11 @@ hr {
 	height:36px;
 	margin-left:5px;
 }
+#comment-form textarea{
+	width:100%;
+	resize: none;
+}
+.notlink:hover{
+	cursor:text;
+	text-decoration:none;
+}

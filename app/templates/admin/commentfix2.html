@@ -5,94 +5,46 @@
                 <div class="row">
                     <div class="col-md-4 col-md-offset-4 col-xs-4 col-xs-offset-4">
                         <h2 class="text-center">评论审核</h2>
+                        <div class="alert message">
+					  		<strong></strong>
+				  		</div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                              <h4 class="panel-title">
-                                <ul class="list-unstyled">
-                                    <li>筛选文章</li>
-                                </ul>
-                              </h4>
-                            </div>
-                            <div id="collapseCategory" class="panel-collapse collapse in">
-                                <div class="panel-body">
-                                    <!-- Split button -->
-                                    <div class="btn-group">
-                                        <button type="button" class="btn bt-default">文章分类</button>
-                                        <button type="button" class="btn btn-danger">请选择</button>
-                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                                            <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something else here</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">Separated link</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                          </div>
-                    </div>
-                </div>
-                <div class="col-md-9 class-xs-12">
+                <div class="col-md-10 class-xs-12 col-md-offset-1">
                       <div>
                         <article class="well">
-                            <div class="text-center">
-                                <h3>标题</h3>
-                            </div>
-                            <div class="text-center">时间分类评论</div>
-                            <div>
-                                <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                </p>
-                            </div>
+                           <div class="text-center">
+                               <h3>{{ article[0] }}</h3>
+                           </div>
+                           <div class="text-center">{{ article[5] }}&nbsp;&nbsp;{{ article[3] }}</div>
+                           <div>
+                               <p>
+                               {{ article[1]|safe }}
+                               </p>
+                           </div>
                         </article>
                         <div class="comment-lists">
                             <ul class="media-list">
+                            {% for comment in comments %}
                                <li class="media">
-                                    <a class="pull-left" href="#">
-                                      <img class="media-object" src="..." alt="...">
-                                    </a>
-                                    <div class="media-body">
-                                      <h4 class="media-heading">Media heading</h4>
-                                        比如:
-                                        你可以每天乞讨300多元,但还有人每天努力工作,赚600多.
-                                        你可以证明给领导看,但还有更好的岗位,赚的更多,公司更舒心.
-                                        努力的同时,请记住,外面还有很多社会.
-                                    </div>
+                                   <div class="media-body">
+                                      <a class="notlink" href="#comment{{ comment[0] }}"><h5 class="media-heading" id="comment{{ comment[0] }}" >{{ comment[1]+'|'+comment[2]+' '+comment[4] }}</h5></a>
+                                        {{ comment[3]|safe }}
+                                   </div>
                                    <div class="btn-group pull-right">
-                                        <button class="btn btn-primary">通过</button>
-                                        <button class="btn" disabled="disbaled">已审核</button>
-                                        <button class="btn btn-danger">删除</button>
+                                   {% if comment[6] == 1 %}
+                                        <button class="btn btn-danger comment-deleted" disabled="disbaled">已删除</button>
+                                   {% elif comment[5] == 1 %}
+                                        <button class="btn comment-allowed" disabled="disbaled">已审核</button>
+                                        <button class="btn btn-danger comment-delete" data="{{ comment[0] }}" dataa="{{ aid }}" >删除</button>
+                                   {% else %} 
+                                        <button class="btn btn-primary comment-allow" data="{{ comment[0] }}" dataa="{{ aid }}" >通过</button>
+                                   		<button class="btn btn-danger comment-delete" data="{{ comment[0] }}" dataa="{{ aid }}" >删除</button>
+                                   {% endif %}
                                    </div>
                                 </li>
                                 <hr>
-                                <li class="media">
-                                    <a class="pull-left" href="#">
-                                      <img class="media-object" src="..." alt="...">
-                                    </a>
-                                    <div class="media-body">
-                                      <h4 class="media-heading">Media heading</h4>
-                                        比如:
-                                        你可以每天乞讨300多元,但还有人每天努力工作,赚600多.
-                                        你可以证明给领导看,但还有更好的岗位,赚的更多,公司更舒心.
-                                        努力的同时,请记住,外面还有很多社会.
-                                    </div>
-                                    <div class="btn-group pull-right">
-                                        <button class="btn btn-primary">通过</button>
-                                        <button class="btn" disabled="disbaled">已审核</button>
-                                        <button class="btn btn-danger">删除</button>
-                                    </div>
-                                </li>
-                                <hr>
+                            {% endfor %}
                             </ul>
                         </div>
                     </div>   

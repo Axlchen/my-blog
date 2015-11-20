@@ -8,7 +8,7 @@ Created on 2015年11月15日
 from flask import g
 from app import app
 import MySQLdb,hashlib,time
-from conf.production import MYSQL_HOST,MYSQL_USER,MYSQL_PASS,MYSQL_DB,MYSQL_PORT,PER_PAGE
+from conf.development import MYSQL_HOST,MYSQL_USER,MYSQL_PASS,MYSQL_DB,MYSQL_PORT,PER_PAGE
 
 @app.before_request
 def before_request():
@@ -57,11 +57,17 @@ class Category(Model):
         res = self.cursor.fetchone()
         return res[0]
         
-    def getCatAndQuantity(self):
-        self.cursor.execute('select tmp.cid,tmp.cat_name,count(tmp.category) from (select %s.id as cid,cat_name,category \
+    def getCatAndQuantity(self,front=0):
+        sql = 'select tmp.cid,tmp.cat_name,count(tmp.category) from (select %s.id as cid,cat_name,category \
                             from %s left join %s on %s.id=%s.category) \
                             as tmp group by tmp.cat_name' % (self.__table,self.__table,self.__atable,\
-                                                             self.__table,self.__atable))
+                                                             self.__table,self.__atable)
+        if front:
+            sql = 'select tmp.cid,tmp.cat_name,count(tmp.category) from (select %s.id as cid,cat_name,category \
+                            from %s left join %s on %s.id=%s.category where %s.is_private=0) \
+                            as tmp group by tmp.cat_name' % (self.__table,self.__table,self.__atable,\
+                                                             self.__table,self.__atable,self.__atable)
+        self.cursor.execute(sql)
         return self.cursor.fetchall()
             
     def add(self,cat_name):
@@ -125,29 +131,54 @@ class Article(Model):
             g.db.commit()
             return True
         
-    def getArticleNum(self):
-        self.cursor.execute('select count(*) from %s' % self.__table)
+    def getArticleNum(self,front=0):
+        sql = 'select count(*) from %s' % self.__table
+        if front:
+            sql += ' where is_private=0'
+        self.cursor.execute(sql)
         res = self.cursor.fetchone()
         return res[0]
     
-    def getCatOfArtNum(self,cat_id):
-        self.cursor.execute('select count(*) from %s where category=%s' % (self.__table,cat_id))
+    def getCatOfArtNum(self,cat_id,front=0):
+        sql = 'select count(*) from %s where category=%s' % (self.__table,cat_id)
+        if front:
+            sql += ' and is_private=0'
+        self.cursor.execute(sql)
         res = self.cursor.fetchone()
         return res[0]
     
-    def getArticle(self,cat=0,offset=0,num=PER_PAGE):
+    def getArticle(self,cat=0,time_id=0,offset=0,num=PER_PAGE,noprivate=0):
         if not cat:     #没有指定分类
-            self.cursor.execute('select title,description,cat_name,add_time,%s.id from %s left join %s on \
-                                %s.category=%s.id order by %s.add_time desc limit %s,%s' \
-                                % (self.__table,self.__table,self.__ctable,self.__table,self.__ctable,\
-                                   self.__table,offset,num))
-            res = self.cursor.fetchall()
+            if time_id:    #指定时间||前台只展示公开文章
+                sql = ['select title,description,cat_name,FROM_UNIXTIME(add_time,"%Y-%m-%d %H:%i"),\
+                        article.id from article left join category on article.category=category.id where \
+                        FROM_UNIXTIME(add_time,"%Y%m")=',str(time_id),' and is_private=0 ']
+                sql = ''.join(sql)+(' order by article.add_time desc limit %s,%s' % (offset,num))     
+                self.cursor.execute(sql)
+                return self.cursor.fetchall()
+            elif noprivate:   #前台只展示公开文章
+                sql = 'select title,description,cat_name,FROM_UNIXTIME(add_time,"%Y-%m-%d %H:%i"),\
+                        article.id from article left join category on article.category=category.id where is_private=0'
+                sql = sql+(' order by article.add_time desc limit %s,%s' % (offset,num))     
+                self.cursor.execute(sql)
+                return self.cursor.fetchall()
+            else:
+                self.cursor.execute('select title,description,cat_name,add_time,%s.id from %s left join %s on \
+                                    %s.category=%s.id order by %s.add_time desc limit %s,%s' \
+                                    % (self.__table,self.__table,self.__ctable,self.__table,self.__ctable,\
+                                       self.__table,offset,num))
         else:           #指定分类
-            self.cursor.execute('select title,description,cat_name,add_time,%s.id from %s left join %s on \
-                                %s.category=%s.id where %s.category=%s order by %s.add_time desc limit %s,%s' \
+            if noprivate:   #前台只展示公开文章
+                self.cursor.execute('select title,description,cat_name,add_time,%s.id from %s left join %s on \
+                                %s.category=%s.id where %s.category=%s and is_private=0 order by %s.add_time desc limit %s,%s' \
                                 % (self.__table,self.__table,self.__ctable,self.__table,self.__ctable,\
                                    self.__table,cat,self.__table,offset,num))
-            res = self.cursor.fetchall()
+            else:
+                self.cursor.execute('select title,description,cat_name,add_time,%s.id from %s left join %s on \
+                                    %s.category=%s.id where %s.category=%s order by %s.add_time desc limit %s,%s' \
+                                    % (self.__table,self.__table,self.__ctable,self.__table,self.__ctable,\
+                                       self.__table,cat,self.__table,offset,num))
+        res = self.cursor.fetchall()
         reslist = [] 
         for item in res:
             result = self.tupleToList(item)
@@ -155,17 +186,76 @@ class Article(Model):
             reslist.append(result)
         return reslist
     
-    def getById(self,cid):
-        self.cursor.execute('select title,description,content,category,is_private,update_time from %s where id=%s' % (self.__table,cid))
+    def getById(self,aid):
+        self.cursor.execute('select title,description,content,category,is_private,update_time from %s where id=%s' % (self.__table,aid))
         res = self.cursor.fetchone()
         res = self.tupleToList(res)
+        self.cursor.execute('select cat_name from %s where id=%s' % (self.__ctable,res[3]))
+        res2 = self.cursor.fetchone()
+        res[3] = res2[0] 
         return self.formatTime(res, 5)
-        
-            
+    
+    def timeAndQuantity(self,front=0):
+        sql = 'select time,count(time) as num,timeid from (SELECT FROM_UNIXTIME(add_time,\
+                "%Y年%m月") time,FROM_UNIXTIME(add_time,"%Y%m") timeid from '+self.__table+') as tmp group by time'
+        if front:
+            sql = 'select time,count(time) as num,timeid from (SELECT FROM_UNIXTIME(add_time,\
+                "%Y年%m月") time,FROM_UNIXTIME(add_time,"%Y%m") timeid from '+self.__table+' where is_private=0) \
+                as tmp group by time'        
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+     
+    def getTimeOfArtNum(self,time_id):
+        sql = ''.join(['select count(*) from ',self.__table,' where FROM_UNIXTIME(add_time,"%Y%m")=',str(time_id),' and \
+                is_private=0'])
+        self.cursor.execute(sql) 
+        res = self.cursor.fetchone()
+        return res[0] 
 
 class Comment(Model):
-    pass
+    __table = 'comment'
+        
+    def addComment(self,aid,nickname,email,content):
+        self.cursor.execute('insert into %s(aid,nickname,email,content,add_time) values(%s,"%s","%s",\
+        "%s",UNIX_TIMESTAMP())' % (self.__table,aid,nickname,email,content))
+        lid = g.db.insert_id()
+        if not lid:
+            self.error = '评论失败'
+            g.db.rollback()
+            return False
+        else:
+            g.db.commit()
+            return True
     
+    def getByAid(self,aid,front=0):
+        if front:
+            sql = ['select id,nickname,email,content,FROM_UNIXTIME(add_time,"%Y-%m-%d %H:%i") from ',\
+                   self.__table,' where aid=',str(aid),' and is_ok=1 and is_delete=0']
+        else:
+            sql = ['select id,nickname,email,content,FROM_UNIXTIME(add_time,"%Y-%m-%d %H:%i"),is_ok,is_delete from ',self.__table,' where aid=',str(aid)]
+        sql = ''.join(sql)
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+    
+    def updateStatus(self,cid,ok=0,delete=0):
+        if not ok and not delete:
+            self.error = '非法操作'
+            return False
+        if ok and delete:
+            self.error = '非法操作' 
+            return False
+        if ok:
+            self.cursor.execute('update %s set is_ok=1 where id=%s' % (self.__table,cid))
+        else:
+            self.cursor.execute('update %s set is_delete=1 where id=%s' % (self.__table,cid))
+        arows = g.db.affected_rows()
+        if not arows:
+            self.error = '操作失败'
+            g.db.rollback()
+            return False
+        else:
+            g.db.commit()
+            return True
         
         
         

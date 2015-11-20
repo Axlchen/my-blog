@@ -9,10 +9,10 @@ Created on 2015年11月15日
 from flask import Flask
 
 app = Flask(__name__,)
-# app = Flask(__name__, instance_relative_config=True)
-# app.config.from_object('conf.development')
-app.config.from_object('conf.production')
-# app.config.from_pyfile('config.py')
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object('conf.development')
+# app.config.from_object('conf.production')
+app.config.from_pyfile('config.py')
 #注册蓝图
 from .views.admin import admin
 from .views.home import home

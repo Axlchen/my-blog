@@ -36,20 +36,13 @@
                             </div>
                             <div id="collapseTime" class="panel-collapse collapse in">
                               <div class="panel-body">
-                                <div class="list-group">
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
+								  <div class="list-group">
+									 {% for item in timeset %}
+                                      <a href="{{ url_for('home.getArticleByTime',time_id=item[2],page_id=1) }}" class="list-group-item">{{ item[0] }}
+                                          <span class="badge">{{ item[1] }}</span>
                                       </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                  </div>
+                                	 {% endfor %}      
+							      </div>
                               </div>
                             </div>
                         </div>
@@ -71,52 +64,40 @@
                         </div>
                         <hr>
                         <div class="comment-form">
-                            <form class="form-inline" role="form">
+                            <form class="form-inline" id="comment-form" role="form">
                                 <div class="form-group col-md-6 col-xs-12">
                                     <label for="comment-form-nickname">Nickname:</label>
-                                    <input type="text" class="form-control" id="comment-form-nickname">
+                                    <input type="text" class="form-control" name="nickname" id="comment-form-nickname">
                                 </div>
                                 <div class="form-group col-md-6 col-xs-12">
                                     <label for="comment-form-email">Email:</label>
-                                    <input type="email" class="form-control" id="comment-form-email" >
+                                    <input type="email" class="form-control" name="email" id="comment-form-email" >
                                 </div>
                                 <div class="form-group col-md-12 col-xs-12">
                                     <label class="sr-only" for=""></label>
-                                    <textarea class="form-control" rows="6"></textarea>
+                                    <textarea class="form-control" name="content" rows="6"></textarea>
                                 </div>
-                              <button type="submit" class="btn btn-default pull-right">发表</button>
+                              <input type="hidden" name="artnum" value="{{ aid }}" />  
+                              <button type="submit" class="btn btn-default pull-right" id="submit-commentform">发表</button>
                             </form>
                         </div>
                         <div class="clearfix"></div>
+                        <div class="alert message">
+							<strong></strong>
+						</div>
                         <hr>
                         <div class="comment-lists">
                             <ul class="media-list">
-                               <li class="media">
-                                    <a class="pull-left" href="#">
-                                      <img class="media-object" src="..." alt="...">
-                                    </a>
-                                    <div class="media-body">
-                                      <h4 class="media-heading">Media heading</h4>
-                                        比如:
-                                        你可以每天乞讨300多元,但还有人每天努力工作,赚600多.
-                                        你可以证明给领导看,但还有更好的岗位,赚的更多,公司更舒心.
-                                        努力的同时,请记住,外面还有很多社会.
-                                    </div>
-                                </li>
-                                <hr>
-                                <li class="media">
-                                    <a class="pull-left" href="#">
-                                      <img class="media-object" src="..." alt="...">
-                                    </a>
-                                    <div class="media-body">
-                                      <h4 class="media-heading">Media heading</h4>
-                                        比如:
-                                        你可以每天乞讨300多元,但还有人每天努力工作,赚600多.
-                                        你可以证明给领导看,但还有更好的岗位,赚的更多,公司更舒心.
-                                        努力的同时,请记住,外面还有很多社会.
-                                    </div>
-                                </li>
-                                <hr>
+                             	<div id="comments"></div>
+                                {% for comment in comments %}
+                                	<li class="media">
+                                   		<div class="media-body">
+                                      		<a class="notlink" href="#comment{{ comment[0] }}"><h5 class="media-heading" id="comment{{ comment[0] }}" >{{ comment[1]+'|'+comment[2]+' '+comment[4] }}</h5></a>
+                                        	{{ comment[3]|safe }}
+                                   		</div>
+                                	</li>
+                               	 	<hr>
+                            	{% endfor %}
                             </ul>
                         </div>
                     </div>    

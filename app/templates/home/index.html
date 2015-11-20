@@ -37,19 +37,12 @@
                             <div id="collapseTime" class="panel-collapse collapse in">
                               <div class="panel-body">
                                 <div class="list-group">
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
+                                {% for item in timeset %}
+                                      <a href="{{ url_for('home.getArticleByTime',time_id=item[2],page_id=1) }}" class="list-group-item">{{ item[0] }}
+                                          <span class="badge">{{ item[1] }}</span>
                                       </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                      <a href="#" class="list-group-item">aa
-                                          <span class="badge">14</span>
-                                      </a>
-                                  </div>
+                                {% endfor %}  
+                                </div>
                               </div>
                             </div>
                         </div>
@@ -96,7 +89,20 @@
 							{% endif %}
 						{% endif %}  
 						</ul>
-					{% endif %}    
+					{% endif %} 
+					<!-- 时间分页 -->
+					{% if total is defined and timepage is defined and total > perpage %}
+						<ul class="pager">
+						{% if timepage <= 1  %}
+							<li class="next"><a href="{{ url_for('home.getArticleByTime',time_id=timeid,page_id=2) }}">next &rarr;</a></li>
+						{% else %}
+						  	<li class="previous"><a href="{{ url_for('home.getArticleByTime',time_id=timeid,page_id=timepage-1) }}">&larr; previous</a></li>
+						  	{% if total > timepage*perpage %}
+						  	<li class="next"><a href="{{ url_for('home.getArticleByTime',time_id=timeid,page_id=timepage+1) }}">next &rarr;</a></li>
+							{% endif %}
+						{% endif %}  
+						</ul>
+					{% endif %}       
                 </div>
             </div>
         </div>

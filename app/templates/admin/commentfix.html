@@ -19,21 +19,12 @@
                             </div>
                             <div id="collapseCategory" class="panel-collapse collapse in">
                                 <div class="panel-body">
-                                    <!-- Split button -->
-                                    <div class="btn-group">
-                                        <button type="button" class="btn bt-default">文章分类</button>
-                                        <button type="button" class="btn btn-danger">请选择</button>
-                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                                            <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Action</a></li>
-                                            <li><a href="#">Another action</a></li>
-                                            <li><a href="#">Something else here</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#">Separated link</a></li>
-                                        </ul>
+                                    <div class="list-group">
+	                                  {% for category in categorys %}
+		                                      <a href="{{ url_for('admin.ccomment',cat_id=category[0],page_id=1) }}" class="list-group-item categoryitem" id="catandnum">{{ category[1] }}
+		                                          <span class="badge">{{ category[2] }}</span>
+		                                      </a>
+	                                  {% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -42,59 +33,46 @@
                 </div>
                 <div class="col-md-9 class-xs-12">
                       <div>
-                        <article class="well">
-                            <div class="text-center">
-                                <h3>标题</h3>
-                            </div>
-                            <div class="text-center">时间分类评论</div>
-                            <div>
-                                <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                </p>
-                            </div>
-                        </article>
-                        <article class="well">
-                            <div class="text-center">
-                                <h3>标题</h3>
-                            </div>
-                            <div class="text-center">时间分类评论</div>
-                            <div>
-                                <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                </p>
-                            </div>
-                        </article>
-                        <article class="well">
-                            <div class="text-center">
-                                <h3>标题</h3>
-                            </div>
-                            <div class="text-center">时间分类评论</div>
-                            <div>
-                                <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                </p>
-                            </div>
-                        </article>
-                        <article class="well">
-                            <div class="text-center">
-                                <h3>标题</h3>
-                            </div>
-                            <div class="text-center">时间分类评论</div>
-                            <div>
-                                <p>
-                                    Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.
-                                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla.
-                                    Maecenas sed diam eget risus varius blandit sit amet non magna. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                </p>
-                            </div>
-                        </article>
-                    </div>   
+                        {% for article in articles %}
+	                        <article class="well">
+	                            <div class="text-center">
+	                                <a href="{{ url_for('admin.decomment',aid=article[4]) }}"><h3>{{ article[0] }}</h3></a>
+	                            </div>
+	                            <div class="text-center">{{ article[3] }}&nbsp;&nbsp;{{ article[2] }}</div>
+	                            <div>
+	                                <p>
+	                                {{ article[1]|safe }}
+	                                </p>
+	                            </div>
+	                        </article>
+                    	{% endfor %}
+                    </div>
+                    <!-- 总分页 -->
+                    {% if total is defined and page is defined and total > perpage %}
+						<ul class="pager">
+						{% if page <= 1  %}
+							<li class="next"><a href="{{ url_for('admin.mainComPage',page_id=2) }}">next &rarr;</a></li>
+						{% else %}
+						  	<li class="previous"><a href="{{ url_for('admin.mainComPage',page_id=page-1) }}">&larr; previous</a></li>
+						  	{% if total > page*perpage %}
+						  	<li class="next"><a href="{{ url_for('admin.mainComPage',page_id=page+1) }}">next &rarr;</a></li>
+							{% endif %}
+						{% endif %}  
+						</ul>
+					{% endif %}
+					<!-- 分类分页 -->
+					{% if total is defined and catpage is defined and total > perpage %}
+						<ul class="pager">
+						{% if catpage <= 1  %}
+							<li class="next"><a href="{{ url_for('admin.ccomment',cat_id=catid,page_id=2) }}">next &rarr;</a></li>
+						{% else %}
+						  	<li class="previous"><a href="{{ url_for('admin.ccomment',cat_id=catid,page_id=catpage-1) }}">&larr; previous</a></li>
+						  	{% if total > catpage*perpage %}
+						  	<li class="next"><a href="{{ url_for('admin.ccomment',cat_id=catid,page_id=catpage+1) }}">next &rarr;</a></li>
+							{% endif %}
+						{% endif %}  
+						</ul>
+					{% endif %} 
                 </div>
             </div>
         </div>

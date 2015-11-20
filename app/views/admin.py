@@ -13,6 +13,8 @@ admin = Blueprint('admin', __name__)
 
 @admin.route('/backyard')
 def index():
+    if session['auth_login']:
+        return redirect(url_for('admin.main'))
     return render_template('admin/index.html',title='Blog of Axlchen')
 
 @admin.route('/by/login',methods=['GET','POST'])
@@ -35,6 +37,19 @@ def logout():
     
 @admin.route('/by/admin',methods=['GET','POST'])
 def main():
+#     return str(request.environ)
+#     return str(request)
+#     return request.path
+# request.environ
+#     headers 头，元数据
+#     data body， 元数据
+#     remote_addr 客户端地址
+#     args 请求链接中的参数（GET 参数），解析后
+#     form form 提交中的参数，解析后
+#     values args 和 forms 的集合
+#     json json 格式的 body 数据，解析后
+#     cookies 指向 Cookie 的链接
+
     cat = models.Category()
     if not session['auth_login']:
         flash('请先登陆')
@@ -45,7 +60,7 @@ def main():
         if not res:
             return cat.error
         else:
-            return '增加成功'
+            return 'success'
     #文章分类
     cats = cat.getCatAndQuantity()
     #文章列表
@@ -68,7 +83,7 @@ def mainPage(page_id):
         if not res:
             return cat.error
         else:
-            return '增加成功'
+            return 'success'
     #文章分类
     cats = cat.getCatAndQuantity()
     #文章列表
@@ -85,22 +100,19 @@ def getArticleByCat(cat_id,page_id):
         flash('请先登陆')
         return redirect(url_for('admin.login'))
     cat = models.Category()
-    article = models.Article()
-    if not session['auth_login']:
-        flash('请先登陆')
-        return redirect(url_for('admin.login'))
     if request.method == 'POST':
         cat_name = request.form['cat_name']
         res = cat.add(cat_name)
         if not res:
             return cat.error
         else:
-            return '增加成功'
+            return 'success'
     #文章分类
     cats = cat.getCatAndQuantity()
     #分类名称
     catname = cat.getCatName(cat_id)
     #该分类的文章数量
+    article = models.Article()
     total = article.getCatOfArtNum(cat_id)
     articles = article.getArticle(cat=cat_id,offset=(page_id-1)*PER_PAGE)
     return render_template('admin/admin.html',title=catname+"|Blog of Axlchen",\
@@ -119,7 +131,7 @@ def write():
         if not res:
             return article.error
         else:
-            return '发表成功'
+            return 'success'
     if not session['auth_login']:
         flash('请先登陆')
         return redirect(url_for('admin.login'))
@@ -140,7 +152,7 @@ def modify(art_id):
         if not res:
             return article.error
         else:
-            return '修改成功'
+            return 'success'
     if not session['auth_login']:
         flash('请先登陆')
         return redirect(url_for('admin.login'))
@@ -155,11 +167,86 @@ def modify(art_id):
     
 @admin.route('/by/commentview')
 def commentview():
-    return render_template('admin/commentfix.html')
+    if not session['auth_login']:
+        flash('请先登陆')
+        return redirect(url_for('admin.login'))
+    #文章分类
+    cat = models.Category()
+    cats = cat.getCatAndQuantity()
+    #文章列表
+    article = models.Article()
+    articles = article.getArticle()
+    #文章数量
+    total = article.getArticleNum()
+    return render_template('admin/commentfix.html',title="评论管理|Blog of Axlchen",categorys=cats,\
+                           articles=articles,page=0,total=total,perpage=PER_PAGE)
 
-@admin.route('/by/decomment')
-def decomment():
-    return render_template('admin/commentfix2.html')
+@admin.route('/by/commentview/page/<int:page_id>')
+def mainComPage(page_id):
+    if not session['auth_login']:
+        flash('请先登陆')
+        return redirect(url_for('admin.login'))
+    #文章分类
+    cat = models.Category()
+    cats = cat.getCatAndQuantity()
+    #文章列表
+    article = models.Article()
+    articles = article.getArticle(offset=(page_id-1)*PER_PAGE)
+    #文章数量
+    total = article.getArticleNum()
+    return render_template('admin/commentfix.html',title="评论管理|Blog of Axlchen",\
+                           categorys=cats,articles=articles,page=page_id,total=total,perpage=PER_PAGE)
+
+@admin.route('/by/ccomment/<int:cat_id>/page/<int:page_id>',methods=['GET','POST'])
+def ccomment(cat_id,page_id):
+    if not session['auth_login']:
+        flash('请先登陆')
+        return redirect(url_for('admin.login'))
+    article = models.Article()
+    #文章分类
+    cat = models.Category()
+    cats = cat.getCatAndQuantity()
+    #分类名称
+    catname = cat.getCatName(cat_id)
+    #该分类的文章数量
+    total = article.getCatOfArtNum(cat_id)
+    articles = article.getArticle(cat=cat_id,offset=(page_id-1)*PER_PAGE)
+    return render_template('admin/commentfix.html',title="评论管理|"+catname+"|Blog of Axlchen",\
+                           categorys=cats,articles=articles,catid=cat_id,catpage=page_id,total=total,perpage=PER_PAGE)
+
+@admin.route('/by/decomment/<int:aid>')
+def decomment(aid):
+    if not session['auth_login']:
+        flash('请先登陆')
+        return redirect(url_for('admin.login'))
+    #全部评论
+    comment = models.Comment()
+    comments = comment.getByAid(aid)
+    #文章
+    article = models.Article()
+    singleArticle = article.getById(aid)
+    return render_template('admin/commentfix2.html',title="评论管理|Blog of Axlchen",comments=comments,\
+                           article=singleArticle,aid=aid)
+
+@admin.route('/by/updatecomment',methods=['POST'])
+def updatecomment():
+    if request.method == 'GET':
+        pass
+    comment = models.Comment()
+    coid = request.form['commentid']
+    todo = request.form['todo']
+    if todo == 'allow':
+        res = comment.updateStatus(coid,ok=1)
+    else:
+        res = comment.updateStatus(coid,delete=1)
+    if not res:
+        return comment.error
+    else:
+        return 'success'
+
+
+
+
 
 
 
